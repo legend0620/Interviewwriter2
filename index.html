@@ -85,6 +85,16 @@ button,.choice,.btn{
   pointer-events:none;
 }
 
+
+.hero{position:relative;z-index:5}
+.top-actions,.row{position:relative;z-index:20}
+#startBtn,#howBtn,#resetBtn{
+  position:relative;
+  z-index:30;
+  pointer-events:auto;
+  touch-action:manipulation;
+}
+
 </style>
 </head>
 <body>
@@ -915,10 +925,23 @@ function showEnding(){
  choices([{name:"もう一度プレイする",action:startGame}]);updateHUD();
 }
 
-el.startBtn.onclick=startGame;el.howBtn.onclick=showHow;el.resetBtn.onclick=startGame;
-el.startBtn.addEventListener("touchend",(e)=>{e.preventDefault();startGame();},{passive:false});
-el.howBtn.addEventListener("touchend",(e)=>{e.preventDefault();showHow();},{passive:false});
-el.resetBtn.addEventListener("touchend",(e)=>{e.preventDefault();startGame();},{passive:false});
+function bindTap(button,action){
+ if(!button)return;
+ let lock=false;
+ const run=(e)=>{
+  if(e){e.preventDefault();e.stopPropagation();}
+  if(lock)return;
+  lock=true;
+  action();
+  setTimeout(()=>{lock=false;},250);
+ };
+ button.onclick=null;
+ button.addEventListener("pointerup",run,{passive:false});
+ button.addEventListener("click",run,{passive:false});
+}
+bindTap(el.startBtn,startGame);
+bindTap(el.howBtn,showHow);
+bindTap(el.resetBtn,startGame);
 initState();scene("編集部へようこそ","ここでは、取材ライターのリアルな判断を体験できます。今回は難易度アップ版です。準備ができたらゲームを開始してください。");choices([]);updateHUD();
 </script>
 </body>
