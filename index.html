@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>取材ライターなりきりゲーム2 〜信頼と炎上のあいだ〜</title>
+<style>
+:root{--bg:#f5f5f7;--card:#fff;--text:#1d1d1f;--muted:#777;--border:#d8d8dd;--primary:#0071e3;--danger:#ff3b30;--success:#34c759;--warn:#ff9500;--radius:14px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:14px;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",sans-serif;line-height:1.6}
+button{font:inherit;border:none;background:none;cursor:pointer}
+.app{max-width:980px;margin:0 auto;padding-bottom:40px}
+.hero{background:linear-gradient(135deg,#fff,#eef6ff);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.title-image{display:block;width:100%;max-width:100%;border-radius:14px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.lead-text{margin:0 0 14px;color:var(--muted);font-size:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:11px 16px;border-radius:10px;font-weight:700;font-size:14px}
+.btn-primary{background:var(--primary);color:#fff}.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}.btn:active{transform:translateY(1px)}
+.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:9px;text-align:center;min-height:70px}
+.stat small{display:block;color:var(--muted);font-size:10px;font-weight:700}.stat strong{display:block;font-size:16px;margin-top:2px}
+.bar{height:5px;background:#eee;border-radius:99px;overflow:hidden;margin-top:6px}.bar span{display:block;height:100%;width:0;background:#333;transition:.25s}
+.blue span{background:var(--primary)}.red span{background:var(--danger)}.green span{background:var(--success)}.orange span{background:var(--warn)}
+.layout{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:820px){.layout{grid-template-columns:1.7fr .9fr}}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.panel-head{padding:14px 16px;background:#fafafa;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px;align-items:center}
+.panel-title{font-size:15px;font-weight:800}.badge{font-size:11px;color:#555;background:#f1f1f3;border:1px solid var(--border);border-radius:99px;padding:3px 8px;white-space:nowrap}
+.panel-body{padding:16px}.scene-title{font-size:20px;line-height:1.35;margin:0 0 8px}.scene-text{color:var(--muted);font-size:14px;margin:0 0 14px}
+.dialogue{display:flex;flex-direction:column;gap:8px;margin:12px 0}.bubble{max-width:92%;width:fit-content;padding:11px 13px;border-radius:12px;font-size:14px}
+.you{align-self:flex-end;background:var(--primary);color:#fff}.guest{align-self:flex-start;background:#f2f2f4;border:1px solid var(--border)}.editor{align-self:flex-start;background:#fff7e6;border:1px solid #ffd599}.system{width:100%;max-width:100%;text-align:center;color:#666;background:#f8f8f8;border:1px dashed var(--border)}
+.choices{display:flex;flex-direction:column;gap:8px}.choice{text-align:left;width:100%;padding:14px;background:#fff;border:1px solid var(--border);border-radius:12px}
+.choice:active{background:#f2f7ff}.choice.disabled{opacity:.45;pointer-events:none}.choice-title{display:block;font-weight:800;font-size:15px}.choice-desc{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.tag{font-size:10px;padding:2px 6px;border-radius:6px;background:#f4f4f5;border:1px solid var(--border);color:#666}
+.list{display:flex;flex-direction:column;gap:8px}.item{border-bottom:1px solid var(--border);padding:10px 0;font-size:13px}.item:last-child{border-bottom:none}.item strong{display:block;font-size:13px}.item p{margin:3px 0 0;color:var(--muted);font-size:12px}.item.selected{background:#eff7ff;border:1px solid #bddcff;border-radius:10px;padding:10px}
+.result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}.result-box{text-align:center;border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}.result-box strong{display:block;font-size:20px}.result-box small{font-size:11px;color:var(--muted)}
+.comment-box{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fafafa;margin:10px 0;font-size:13px}.skill-box{display:grid;grid-template-columns:1fr 1fr;gap:8px}.skill{border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}.skill strong{font-size:13px}.skill p{margin:3px 0 0;color:var(--muted);font-size:11px}
+.achievements{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:8px}.achieve{background:#fff8e1;border:1px solid #ffe082;color:#bf7600;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:800}
+.footer-reset{margin-top:18px;text-align:center}
+.person-visual{
+  display:flex;
+  justify-content:center;
+  margin:10px 0 14px;
+}
+.person-visual img{
+  width:min(240px,72vw);
+  max-height:360px;
+  object-fit:contain;
+  border-radius:16px;
+  background:linear-gradient(180deg,#fff,#f2f7ff);
+  border:1px solid var(--border);
+  box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+.person-card-img{
+  width:86px;
+  height:110px;
+  object-fit:contain;
+  float:right;
+  margin-left:10px;
+  margin-bottom:4px;
+  border-radius:12px;
+  background:#f7f9ff;
+  border:1px solid var(--border);
+}
+.choice::after{content:"";display:block;clear:both}
+@media(max-width:420px){
+  .person-card-img{width:70px;height:92px}
+  .person-visual img{width:min(210px,78vw);max-height:310px}
+}
+
+@media(max-width:420px){body{padding:10px}.hud{grid-template-columns:repeat(2,1fr)}.hero{padding:10px}.btn{width:100%}.row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="hero">
+  <img src="title.png" alt="取材ライターなりきりゲーム2" class="title-image">
+  <p class="lead-text">企画、準備、質問、メモ選び、切り口、タイトル、掲載前確認。読まれる記事と、相手を傷つけない記事。そのあいだで判断する取材ライター体験ゲームです。</p>
+  <div class="row"><button class="btn btn-primary" id="startBtn">ゲーム開始</button><button class="btn btn-outline" id="howBtn">遊び方</button></div>
+</header>
+
+<section class="hud">
+  <div class="stat"><small>記事</small><strong id="articleNum">1/5</strong></div>
+  <div class="stat"><small>質問</small><strong id="questionNum">0/5</strong></div>
+  <div class="stat"><small>締切</small><strong id="deadlineStat">100</strong><div class="bar orange"><span id="deadlineBar"></span></div></div>
+  <div class="stat"><small>体力</small><strong id="staminaStat">100</strong><div class="bar green"><span id="staminaBar"></span></div></div>
+  <div class="stat"><small>予算</small><strong id="budgetStat">100</strong><div class="bar blue"><span id="budgetBar"></span></div></div>
+  <div class="stat"><small>信頼</small><strong id="trustStat">0</strong><div class="bar blue"><span id="trustBar"></span></div></div>
+  <div class="stat"><small>深掘り</small><strong id="depthStat">0</strong><div class="bar"><span id="depthBar"></span></div></div>
+  <div class="stat"><small>PV力</small><strong id="readStat">0</strong><div class="bar"><span id="readBar"></span></div></div>
+  <div class="stat"><small>正確性</small><strong id="accuracyStat">0</strong><div class="bar green"><span id="accuracyBar"></span></div></div>
+  <div class="stat"><small>炎上</small><strong id="riskStat">0</strong><div class="bar red"><span id="riskBar"></span></div></div>
+</section>
+
+<main class="layout">
+<section class="panel">
+  <div class="panel-head"><div class="panel-title" id="phaseTitle">編集部</div><div class="badge" id="phaseBadge">待機中</div></div>
+  <div class="panel-body"><div id="scene"></div><div class="choices" id="choices"></div><div class="footer-reset"><button class="btn btn-outline" id="resetBtn">最初から</button></div></div>
+</section>
+<aside>
+  <section class="panel" style="margin-bottom:12px;"><div class="panel-head"><div class="panel-title">取材メモ</div><div class="badge" id="materialCount">0件</div></div><div class="panel-body"><div class="list" id="materials"></div></div></section>
+  <section class="panel" style="margin-bottom:12px;"><div class="panel-head"><div class="panel-title">ライタースキル</div><div class="badge" id="skillPointBadge">0P</div></div><div class="panel-body"><div class="skill-box" id="skills"></div></div></section>
+  <section class="panel"><div class="panel-head"><div class="panel-title">公開記事</div><div class="badge" id="publishedCount">0本</div></div><div class="panel-body"><div class="list" id="publishedList"></div></div></section>
+</aside>
+</main>
+</div>
+
+<script>
+const MAX_ARTICLES=5,MAX_QUESTIONS=5,PREP_COUNT=2,USE_MATERIAL_COUNT=3;
+
+const prompts=[
+ {theme:"プロの矜持",editor:"職人や経営者の『こだわり』に迫れ。上辺だけの美談はいらない。",candidates:["ramen","it","zoo"]},
+ {theme:"挫折と再生",editor:"失敗からどう立ち上がったかを掘れ。きれいごとより、リアルな葛藤が読みたい。",candidates:["it","game","ramen"]},
+ {theme:"愛される理由",editor:"なぜそこに人が集まるのか。愛される秘密を、現場の声から紐解いてこい。",candidates:["zoo","book","idol"]},
+ {theme:"誰かを支える仕事",editor:"目立たないけど、誰かの生活を支えている人を取材してこい。数字よりも現場の温度だ。",candidates:["care","farmer","book"]},
+ {theme:"未来をつくる人",editor:"まだ大きく知られていないが、未来を変えようとしている人を探せ。夢だけでなく、現実の壁も聞いてこい。",candidates:["game","farmer","idol"]}
+];
+
+const planTypes=[
+ {id:"profile",name:"人物密着型",desc:"相手の人生や価値観に寄り添う。信頼と深掘りが伸びやすい。",effects:{trust:8,depth:8,read:-1,accuracy:2,risk:-2,deadline:-8,stamina:-5,budget:0},tags:["信頼+","深掘り+"]},
+ {id:"issue",name:"課題提起型",desc:"個人の話を社会や時代のテーマにつなげる。正確性が重要。",effects:{trust:1,depth:5,read:4,accuracy:8,risk:3,deadline:-10,stamina:-4,budget:-4},tags:["正確性+","重厚"]},
+ {id:"buzz",name:"バズ狙い型",desc:"読まれる切り口で攻める。PVは伸びるが、信頼を削りやすい。",effects:{trust:-3,depth:0,read:14,accuracy:-2,risk:8,deadline:-4,stamina:-2,budget:0},tags:["PV+","炎上注意"]}
+];
+
+const prepOptions=[
+ {id:"past",name:"過去の記事を読む",desc:"相手の背景を知り、重複質問を避ける。",effects:{trust:6,depth:4,accuracy:4,risk:-2,deadline:-10,stamina:-4,budget:0},tags:["信頼+","時間消費"]},
+ {id:"sns",name:"SNS・口コミを見る",desc:"最近の話題や読者の入口を探る。",effects:{trust:-1,read:8,accuracy:1,risk:3,deadline:-7,stamina:-3,budget:0},tags:["PV+","炎上注意"]},
+ {id:"data",name:"データ調査・現地体験",desc:"数字を調べたり、客として体験する。",effects:{trust:2,depth:3,read:2,accuracy:10,risk:-3,deadline:-14,stamina:-8,budget:-15},tags:["正確性++","予算消費"]},
+ {id:"questions",name:"質問リストを作り込む",desc:"取材が安定する。予定調和には注意。",effects:{trust:4,depth:2,read:-1,accuracy:5,risk:-2,deadline:-8,stamina:-5,budget:0},tags:["安定"]},
+ {id:"blank",name:"あえて余白を残す",desc:"偶然の会話を拾いやすいが、準備不足にもなる。",effects:{depth:5,read:5,accuracy:-4,risk:5,deadline:-3,stamina:-1,budget:0},tags:["偶然","リスク"]}
+];
+
+function q(id,type,text,note,kind,e){return {id,type,q:text,note,kind,effects:e}}
+function mkPerson(id,name,intro,first,landmines,questions,angles,titles){return {id,name,intro,first,landmines,questions,angles,titles}}
+
+const commonAngles={
+ docu:[
+  {id:"human",name:"人物の人生を丁寧に描く",desc:"信頼と深掘りを活かす王道記事。",effects:{trust:6,depth:7,read:4,risk:-3}},
+  {id:"social",name:"現場の課題として描く",desc:"社会性が出る。正確性が重要。",effects:{accuracy:8,depth:6,read:5,risk:2}},
+  {id:"gap",name:"意外な素顔で読ませる",desc:"読まれやすいが、軽く扱うと危険。",effects:{read:10,trust:1,risk:4}}
+ ]
+};
+
+const people={
+ ramen:mkPerson("ramen","ラーメン屋の店主","豚骨を24時間煮込む職人気質の店主。口は悪いが常連に愛されている。","取材？ ラーメン伸びる前に早くしてくれ。",["利益","儲かって","映え"],[
+  q("r1","safe","スープのこだわりを教えてください。","豚骨を24時間煮込む狂気のこだわり","craft",{trust:4,read:2,stamina:-5,deadline:-5}),
+  q("r2","empathy","なぜこの街でお店を始めたんですか？","亡き妻と出会った思い出の街だから","heart",{trust:6,depth:6,stamina:-7,deadline:-7}),
+  q("r3","funny","休日は何をされているんですか？","実は可愛いスイーツ巡りが大好き","gap",{trust:2,read:7,stamina:-4,deadline:-4}),
+  q("r4","sharp","ぶっちゃけ利益は出ていますか？","材料費の高騰で利益がほぼ無い","issue",{trust:-4,depth:5,risk:4,accuracy:4,stamina:-8,deadline:-6}),
+  q("r5","third","常連さんはどんな方々ですか？","親子3代で通ってくれる客がいる","third",{accuracy:8,trust:4,depth:3,stamina:-5,deadline:-5}),
+  q("r6","deep","修行時代で一番苦しかったことは？","師匠に毎日怒鳴られ鍋を洗う日々","conflict",{depth:8,trust:3,stamina:-9,deadline:-7}),
+  q("r7","respect","店主にとって、この味を守る意味は？","体が動く限り、この一杯を守り抜く覚悟","quote",{trust:10,depth:5,stamina:-6,deadline:-6})
+ ],commonAngles.docu,[
+  {id:"honest",text:"地元に愛される一杯の秘密",effects:{trust:6,depth:4,read:5,risk:-3}},
+  {id:"quote",text:"24時間煮込む情熱のスープ、その裏側",effects:{trust:3,depth:6,read:9,risk:1}},
+  {id:"click",text:"頑固店主と可愛いスイーツの意外すぎる関係",effects:{trust:-6,depth:0,read:17,risk:13}}
+ ]),
+ it:mkPerson("it","若手IT起業家","鋭い言葉で本質を突く若手起業家。厳しいが、根には熱い思いがある。","時間は5分。要件を手短に頼むよ。",["意識高い","裏切り","炎上"],[
+  q("i1","safe","起業のきっかけを教えてください。","社会の非効率への強烈な怒り","issue",{trust:3,read:4,accuracy:2,stamina:-5,deadline:-5}),
+  q("i2","respect","経営者として一番大切にしている考えは？","浅い思考は、誰かの時間を奪う","quote",{trust:8,depth:5,stamina:-6,deadline:-6}),
+  q("i3","deep","最大の失敗は何でしたか？","創業期に右腕が離脱し、組織が崩れかけた","conflict",{depth:10,trust:2,risk:3,stamina:-10,deadline:-8}),
+  q("i4","empathy","社員にはどんな思いで接していますか？","厳しい言葉の裏に、成長への願いがある","heart",{trust:6,depth:6,stamina:-7,deadline:-6}),
+  q("i5","funny","休日は何をしているんですか？","サウナでひたすら思考を整理している","gap",{trust:3,read:6,stamina:-4,deadline:-4}),
+  q("i6","scene","5年後の野望は？","5年以内に世界シェアを取りにいく","future",{depth:4,read:7,stamina:-6,deadline:-5}),
+  q("i7","sharp","『意識高い系』と言われることについてどう思いますか？","ラベルを貼る人ほど、自分の問いから逃げている","quote",{trust:-5,risk:8,read:10,stamina:-8,deadline:-6})
+ ],commonAngles.docu,[
+  {id:"honest",text:"若き起業家が語る、失敗と再起のリアル",effects:{trust:6,depth:6,read:7,risk:-2}},
+  {id:"quote",text:"浅い思考は、誰かの時間を奪う",effects:{trust:3,depth:8,read:11,risk:2}},
+  {id:"click",text:"右腕の離脱を越えた若きカリスマの真実",effects:{trust:-5,depth:4,read:16,risk:12}}
+ ]),
+ zoo:mkPerson("zoo","動物園の園長","赤字続きでも、動物への愛だけは誰にも負けない園長。","ごめんなさい、今エサの準備中で！",["赤字","客寄せ","かわいそう"],[
+  q("z1","safe","一番人気の動物は？","いつも寝てばかりの怠け者のクマ","gap",{trust:4,read:5,stamina:-4,deadline:-4}),
+  q("z2","empathy","動物と心が通じる瞬間はありますか？","目を見れば、何を言いたいか分かる瞬間がある","heart",{trust:7,depth:5,stamina:-7,deadline:-6}),
+  q("z3","sharp","ぶっちゃけ経営は順調ですか？","赤字続きだが、エサ代だけは絶対に削らない","issue",{trust:-2,depth:7,risk:2,accuracy:4,stamina:-8,deadline:-6}),
+  q("z4","third","来園者から印象に残った言葉は？","子どもが『また会いに来るね』と動物に手を振った","third",{accuracy:7,depth:4,trust:4,stamina:-5,deadline:-5}),
+  q("z5","funny","園長の推し動物は？","実はバックヤードにいる野良猫","gap",{trust:5,read:6,stamina:-4,deadline:-4}),
+  q("z6","respect","動物に教わったことは？","ありのままに生きる強さ","quote",{trust:8,depth:6,stamina:-6,deadline:-6}),
+  q("z7","scene","この動物園の夢は何ですか？","動物と人間が、静かに共存できる場所にしたい","future",{depth:5,read:4,trust:3,stamina:-6,deadline:-5})
+ ],commonAngles.docu,[
+  {id:"honest",text:"目を見れば分かる。園長と動物たちの絆",effects:{trust:6,depth:5,read:6,risk:-2}},
+  {id:"quote",text:"赤字でもエサ代は削らない、その覚悟",effects:{trust:4,depth:7,read:9,risk:1}},
+  {id:"click",text:"怠け者クマと熱血園長のゆるすぎる毎日",effects:{trust:-2,depth:2,read:14,risk:5}}
+ ]),
+ book:mkPerson("book","古本屋の店主","商店街の片隅で古本屋を続ける店主。売上は厳しいが、本と人の記憶を大切にしている。","取材ですか。大きな話はありませんよ。本が、ここにあるだけです。",["売れない","閉店","時代遅れ"],[
+  q("b1","safe","このお店は何年続いているんですか？","祖父の代から続く小さな古本屋","craft",{trust:4,accuracy:3,stamina:-4,deadline:-4}),
+  q("b2","empathy","忘れられないお客さんはいますか？","亡くなった父の本を探しに来た青年がいた","heart",{trust:7,depth:7,stamina:-7,deadline:-6}),
+  q("b3","sharp","正直、古本屋は今の時代きびしいですか？","売上は落ちているが、店を閉める決心はつかない","issue",{trust:-3,depth:7,risk:4,accuracy:4,stamina:-8,deadline:-6}),
+  q("b4","funny","店主の推し本を一冊だけ選ぶなら？","誰にも売りたくないほど好きな詩集がある","gap",{trust:4,read:6,stamina:-4,deadline:-4}),
+  q("b5","third","常連さんはどんな方が多いですか？","毎週来て、一冊も買わずに話だけして帰る老人がいる","third",{trust:4,accuracy:7,depth:4,stamina:-5,deadline:-5}),
+  q("b6","respect","本を売る仕事の一番大切なところは？","本ではなく、その人の時間を手渡している","quote",{trust:9,depth:6,stamina:-6,deadline:-6}),
+  q("b7","scene","この店をこれからどうしていきたいですか？","子どもがふらっと入れる場所として残したい","future",{trust:5,depth:5,read:3,stamina:-6,deadline:-5})
+ ],commonAngles.docu,[
+  {id:"honest",text:"商店街の片隅で、本と記憶を手渡す人",effects:{trust:6,depth:6,read:6,risk:-2}},
+  {id:"quote",text:"本ではなく、その人の時間を売っている",effects:{trust:5,depth:8,read:9,risk:1}},
+  {id:"click",text:"売れない古本屋が、それでも閉店しない理由",effects:{trust:-4,depth:5,read:16,risk:10}}
+ ]),
+ idol:mkPerson("idol","地方アイドル","地元イベントを中心に活動するアイドル。華やかに見えるが、裏側では葛藤も多い。","えっ、取材ですか？ ちゃんと話せるかな……でも、がんばります！",["売れてない","卒業","炎上"],[
+  q("id1","safe","活動を始めたきっかけは？","地元を元気にしたいと思って応募した","heart",{trust:5,read:4,stamina:-5,deadline:-5}),
+  q("id2","empathy","一番つらかったことは何ですか？","ライブにお客さんが3人しか来なかった日がある","conflict",{trust:6,depth:8,risk:2,stamina:-8,deadline:-6}),
+  q("id3","third","ファンに言われて嬉しかった言葉は？","『明日も仕事がんばれる』と言われた","third",{trust:5,read:6,accuracy:4,stamina:-4,deadline:-4}),
+  q("id4","sharp","正直、売れたい気持ちはありますか？","地元を大事にしたいけど、もっと広い世界も見たい","issue",{trust:-2,depth:8,risk:5,read:5,stamina:-8,deadline:-6}),
+  q("id5","respect","ステージに立つ意味は何ですか？","誰かの一日を少しだけ明るくできること","quote",{trust:8,depth:6,stamina:-6,deadline:-6}),
+  q("id6","scene","これから叶えたい夢は？","いつか地元の大きなホールを満員にしたい","future",{depth:5,read:5,trust:4,stamina:-5,deadline:-5}),
+  q("id7","deep","笑顔でいられない日はありますか？","笑顔の裏で、帰り道に泣いたこともある","heart",{trust:3,depth:10,risk:3,stamina:-9,deadline:-7})
+ ],commonAngles.docu,[
+  {id:"honest",text:"地元を照らす、小さなステージの光",effects:{trust:7,depth:5,read:6,risk:-3}},
+  {id:"quote",text:"誰かの一日を、少しだけ明るくしたい",effects:{trust:5,depth:8,read:9,risk:1}},
+  {id:"click",text:"観客3人の日を越えて、彼女が笑う理由",effects:{trust:-3,depth:6,read:17,risk:9}}
+ ]),
+ care:mkPerson("care","介護施設の職員","高齢者施設で働く介護職員。人の尊厳を守ることに誇りを持っている。","取材ですか。現場のことを丁寧に書いてもらえるなら、ありがたいです。",["きつい","給料","人手不足"],[
+  q("c1","safe","普段はどんなお仕事をされているんですか？","食事、入浴、会話まで生活全体を支えている","craft",{trust:4,accuracy:5,stamina:-5,deadline:-5}),
+  q("c2","empathy","この仕事を続けられる理由は何ですか？","名前を覚えてもらえた瞬間に報われる","heart",{trust:7,depth:7,stamina:-7,deadline:-6}),
+  q("c3","sharp","正直、現場は人手不足ですか？","忙しさで一人ひとりに向き合えない日もある","issue",{trust:-3,depth:8,accuracy:6,risk:4,stamina:-8,deadline:-6}),
+  q("c4","third","利用者さんから忘れられない言葉は？","『あなたが来ると安心する』と言われた","third",{trust:6,accuracy:6,depth:5,stamina:-5,deadline:-5}),
+  q("c5","respect","介護で一番大事にしていることは？","世話ではなく、その人の尊厳を守ること","quote",{trust:9,depth:7,stamina:-6,deadline:-6}),
+  q("c6","deep","悔しかった出来事はありますか？","忙しさを理由に、話を最後まで聞けなかった日がある","conflict",{trust:3,depth:10,risk:2,stamina:-9,deadline:-7}),
+  q("c7","scene","社会に伝えたいことはありますか？","介護は誰かの未来ではなく、みんなの現在の問題","issue",{accuracy:6,depth:6,read:5,stamina:-6,deadline:-6})
+ ],commonAngles.docu,[
+  {id:"honest",text:"その人の尊厳を守る、介護の現場から",effects:{trust:7,depth:7,accuracy:5,risk:-4}},
+  {id:"quote",text:"『あなたが来ると安心する』その一言のために",effects:{trust:6,depth:8,read:9,risk:-2}},
+  {id:"click",text:"きれいごとでは語れない介護現場のリアル",effects:{trust:-4,accuracy:5,depth:7,read:16,risk:11}}
+ ]),
+ game:mkPerson("game","インディーゲーム開発者","会社員をしながら個人でゲームを作る開発者。夢と現実の間で制作を続けている。","ゲーム制作の話なら、たぶん朝まで話せます。",["稼げない","パクリ","爆死"],[
+  q("g1","safe","ゲームを作り始めたきっかけは？","子どもの頃に遊んだ一本のゲームが人生を変えた","heart",{trust:5,read:5,stamina:-5,deadline:-5}),
+  q("g2","respect","制作で一番こだわっている部分は？","操作した瞬間に気持ちいいと思える手触り","craft",{trust:8,depth:6,stamina:-6,deadline:-6}),
+  q("g3","sharp","正直、個人ゲーム制作で稼げますか？","売上だけなら赤字。でも、作らない人生の方が損だと思っている","issue",{trust:-3,depth:8,read:6,risk:5,accuracy:5,stamina:-8,deadline:-6}),
+  q("g4","funny","開発中に一番笑ったバグは？","主人公が無限に空へ飛んでいくバグがあった","gap",{trust:4,read:8,stamina:-4,deadline:-4}),
+  q("g5","deep","完成しないかもと思ったことは？","何度も投げ出しかけたが、遊んでくれた一人の感想で戻ってきた","conflict",{trust:4,depth:10,stamina:-9,deadline:-7}),
+  q("g6","third","プレイヤーからの反応で覚えているものは？","『嫌な一日だったけど、このゲームで少し笑えた』という感想","third",{trust:6,accuracy:6,depth:5,stamina:-5,deadline:-5}),
+  q("g7","scene","次に作りたいゲームは？","誰かの失敗を肯定できるゲームを作りたい","future",{depth:6,read:5,trust:4,stamina:-6,deadline:-5})
+ ],commonAngles.docu,[
+  {id:"honest",text:"会社員をしながら、それでもゲームを作る理由",effects:{trust:6,depth:7,read:8,risk:-2}},
+  {id:"quote",text:"作らない人生の方が、きっと損だと思った",effects:{trust:5,depth:8,read:10,risk:1}},
+  {id:"click",text:"赤字でもゲームを作る人の、笑えないほど熱い話",effects:{trust:-3,depth:6,read:17,risk:9}}
+ ]),
+ farmer:mkPerson("farmer","若手農家","都市部から移住して農業を始めた若手農家。自然への憧れと、厳しい現実の両方を知っている。","畑を見ながらでよければ、話せますよ。",["楽そう","儲かる","田舎暮らし最高"],[
+  q("f1","safe","農業を始めたきっかけは？","都会で働き続ける未来が見えなくなった","heart",{trust:5,depth:4,stamina:-5,deadline:-5}),
+  q("f2","respect","作物づくりで一番大切なことは？","毎日見て、少しの変化に気づくこと","craft",{trust:8,depth:6,accuracy:3,stamina:-6,deadline:-6}),
+  q("f3","sharp","農業で生活していくのは大変ですか？","天気ひとつで収入が変わる怖さがある","issue",{trust:-3,depth:8,accuracy:6,risk:4,stamina:-8,deadline:-6}),
+  q("f4","funny","畑で起きた珍事件は？","大事に育てた野菜をイノシシに全部食べられた","gap",{trust:4,read:8,stamina:-4,deadline:-4}),
+  q("f5","third","地元の人との関係はどうですか？","最初はよそ者扱いだったが、今は野菜を交換する仲になった","third",{trust:5,accuracy:7,depth:5,stamina:-5,deadline:-5}),
+  q("f6","deep","移住して後悔したことはありますか？","孤独で、夜に都会へ戻りたくなった日もある","conflict",{trust:3,depth:10,risk:2,stamina:-9,deadline:-7}),
+  q("f7","scene","これからどんな農園にしたいですか？","子どもが土に触れられる畑にしたい","future",{trust:5,depth:5,read:4,stamina:-6,deadline:-5})
+ ],commonAngles.docu,[
+  {id:"honest",text:"都会を離れ、畑で見つけた小さな未来",effects:{trust:7,depth:6,read:7,risk:-2}},
+  {id:"quote",text:"毎日見て、少しの変化に気づくこと",effects:{trust:5,depth:8,accuracy:4,read:8,risk:-1}},
+  {id:"click",text:"田舎暮らしは甘くない。若手農家の本音",effects:{trust:-4,depth:7,read:17,risk:10}}
+ ])
+};
+
+const confirmationOptions=[
+ {id:"full",name:"本人にしっかり確認する",desc:"信頼と正確性が大きく上がる。ただし、表現は少し丸くなる。",effects:{trust:10,accuracy:10,read:-3,risk:-12,deadline:-8,stamina:-3},tags:["安全"]},
+ {id:"partial",name:"事実関係だけ確認する",desc:"現場でも使いやすいバランス型。",effects:{trust:4,accuracy:8,read:0,risk:-7,deadline:-5,stamina:-2},tags:["バランス"]},
+ {id:"none",name:"そのまま公開する",desc:"勢いは出るが、誤解や炎上の危険が大きく増える。",effects:{trust:-10,accuracy:-12,read:7,risk:20,deadline:0,stamina:0},tags:["危険","炎上注意"]}
+];
+
+const skills=[
+ {id:"listen",name:"傾聴力",desc:"信頼が上がりやすくなる"},
+ {id:"structure",name:"構成力",desc:"深掘り評価が上がりやすくなる"},
+ {id:"title",name:"タイトル力",desc:"PVが伸びやすくなる"},
+ {id:"fact",name:"裏取り力",desc:"正確性が上がり、炎上が下がる"}
+];
+
+const achievements=[
+ {id:"heart",name:"心を開かせたライター",condition:s=>s.trust>=85},
+ {id:"deep",name:"深掘りの鬼",condition:s=>s.depth>=85},
+ {id:"fact",name:"裏取り職人",condition:s=>s.accuracy>=85},
+ {id:"buzz",name:"PVの魔術師",condition:s=>s.read>=85},
+ {id:"fire",name:"炎上ギリギリの人",condition:s=>s.risk>=75}
+];
+
+const happenings=[
+ {title:"気まずい沈黙",text:"質問のあと、ふと会話が途切れた。相手は少し考え込んでいる。",choices:[
+  {name:"あえて待つ",result:"沈黙のあと、相手はぽつりと本音を話し始めた。",effects:{trust:5,depth:5,stamina:-3,deadline:-4}},
+  {name:"急いで次の質問へ",result:"少し急かしたような空気になった。",effects:{trust:-3,risk:2,deadline:-2}},
+  {name:"自分の失敗談を少し話す",result:"場が少しやわらぎ、相手も自分の話をしやすくなった。",effects:{trust:6,depth:3,stamina:-4,deadline:-4}}
+ ]},
+ {title:"相手からの逆質問",text:"相手が少しこちらを見て、今度はあなたに問いかけてきた。",speaker:"逆に聞きたいんですが、あなたはなぜライターをしているんですか？",choices:[
+  {name:"本音で語る",result:"相手は少し笑って、『それなら話します』と言った。",effects:{trust:8,depth:4,stamina:-4,deadline:-4}},
+  {name:"無難に流す",result:"相手はそれ以上踏み込んでこなかった。",effects:{trust:-2,depth:-2}},
+  {name:"読者に届けたい理由を話す",result:"取材の目的が伝わり、相手の警戒が少し解けた。",effects:{trust:6,accuracy:3,risk:-2,deadline:-3}}
+ ]},
+ {title:"編集部から催促",text:"スマホに編集長から通知が来た。「締切、大丈夫？」",choices:[
+  {name:"少し急ぐ",result:"テンポは上がったが、聞き漏らしが増えた。",effects:{deadline:8,accuracy:-4,risk:3}},
+  {name:"大事な話を優先する",result:"締切は苦しくなったが、記事の芯は強くなった。",effects:{deadline:-8,depth:6,trust:3}},
+  {name:"編集長に延長交渉する",result:"少しだけ猶予をもらえたが、編集長の視線は厳しい。",effects:{deadline:12,trust:-1,read:-2}}
+ ]},
+ {title:"録音トラブル",text:"ふと画面を見ると、録音アプリが止まっていた。大事な話の途中だった。",choices:[
+  {name:"正直に伝えて、もう一度聞く",result:"相手は少し驚いたが、誠実さは伝わった。",effects:{trust:5,accuracy:7,deadline:-8,stamina:-4}},
+  {name:"記憶を頼りにメモする",result:"話の流れは守れたが、細部に不安が残った。",effects:{accuracy:-15,risk:10,deadline:2}},
+  {name:"その話題をあきらめる",result:"危険な切り取りは避けられたが、記事の深みは少し失われた。",effects:{depth:-5,risk:-3,deadline:4}}
+ ]},
+ {title:"相手の表情が曇る",text:"ある質問のあと、相手の表情が少し曇った。踏み込みすぎたかもしれない。",choices:[
+  {name:"すぐに謝って意図を説明する",result:"誤解は少し解けた。取材の姿勢は伝わったようだ。",effects:{trust:6,risk:-5,accuracy:2,deadline:-3}},
+  {name:"そのまま深掘りする",result:"強い言葉は引き出せたが、相手との距離は広がった。",effects:{depth:7,read:5,trust:-18,risk:15,stamina:-5}},
+  {name:"話題を変える",result:"空気は戻ったが、核心には踏み込めなかった。",effects:{trust:2,depth:-4,risk:-2,deadline:-2}}
+ ]},
+ {title:"第三者が割り込んでくる",text:"取材中、近くにいた関係者が『それは違うよ』と口を挟んできた。",choices:[
+  {name:"その人にも話を聞く",result:"記事に立体感が出た。思わぬ証言も得られた。",effects:{accuracy:8,depth:5,trust:3,deadline:-8,stamina:-5}},
+  {name:"取材相手の話を優先する",result:"場は落ち着いたが、別視点の情報は拾えなかった。",effects:{trust:3,accuracy:-2,deadline:-2}},
+  {name:"両者の違いをメモしておく",result:"対立を煽らず、事実確認の余地を残せた。",effects:{accuracy:6,risk:-4,depth:3,deadline:-5}}
+ ]},
+ {title:"オフレコ発言",text:"相手がふと声を落として『これは記事にはしないでほしいんですが……』と話し始めた。",choices:[
+  {name:"オフレコとして扱う",result:"信頼は深まった。記事には使えないが、背景理解が進んだ。",effects:{trust:10,depth:4,risk:-8,read:-2}},
+  {name:"匿名なら使えるか相談する",result:"条件付きで使える可能性が出たが、慎重な確認が必要になった。",effects:{accuracy:5,depth:6,risk:2,deadline:-6}},
+  {name:"こっそり記事に使う",instantGameOver:true,gameOverTitle:"オフレコ破り",result:"取材相手との約束を破ったことで、信頼は完全に失われた。",editor:"オフレコを破ったら、ライターとして終わりだ。",effects:{read:12,depth:5,trust:-30,risk:35,accuracy:-15}}
+ ]},
+ {title:"写真撮影の許可",text:"記事に使えそうな良い瞬間があった。写真を撮りたいが、相手は忙しそうだ。",choices:[
+  {name:"きちんと許可を取って撮る",result:"少し時間はかかったが、安心して使える写真が撮れた。",effects:{accuracy:5,trust:4,read:5,risk:-5,deadline:-5}},
+  {name:"あとで確認するつもりで撮る",result:"良い写真は撮れたが、掲載確認の手間が増えた。",effects:{read:10,accuracy:-8,risk:12,deadline:-2}},
+  {name:"写真はあきらめてメモを優先する",result:"ビジュアルの強さは減ったが、会話への集中は保てた。",effects:{depth:4,trust:2,read:-3,risk:-2}}
+ ]},
+ {title:"SNSで先に噂が流れる",text:"取材中の話題について、SNSで先に憶測投稿が広がり始めた。",choices:[
+  {name:"SNSの反応を記事に取り込む",result:"時事性は出たが、憶測に引っ張られる危険も増えた。",effects:{read:12,risk:22,accuracy:-15,deadline:-4}},
+  {name:"憶測は無視して本人確認を優先する",result:"派手さは減ったが、記事の信頼性は上がった。",effects:{accuracy:8,trust:5,risk:-6,read:-2,deadline:-5}},
+  {name:"編集長に相談する",result:"判断の精度は上がったが、少し時間を使った。",effects:{accuracy:5,risk:-4,deadline:-4}}
+ ]},
+ {title:"取材相手が泣きそうになる",text:"過去の話をしている途中、相手の声が少し震えた。",choices:[
+  {name:"いったん録音を止める",result:"相手への配慮が伝わり、深い信頼につながった。",effects:{trust:10,risk:-8,depth:3,deadline:-4}},
+  {name:"静かに待つ",result:"相手は自分のペースで話を続けてくれた。",effects:{trust:7,depth:6,stamina:-3,deadline:-5}},
+  {name:"そのまま核心を聞く",result:"強い言葉は得られたが、少し傷つけてしまったかもしれない。",effects:{depth:8,read:5,trust:-20,risk:18}}
+ ]},
+ {title:"相手の予定が早まる",text:"相手が時計を見て『すみません、あと5分で出ないといけなくて』と言った。",choices:[
+  {name:"一番大事な質問に絞る",result:"記事の芯になる話はなんとか聞けた。",effects:{depth:5,accuracy:3,deadline:5,stamina:-2}},
+  {name:"急いで全部聞こうとする",result:"質問は消化できたが、答えは浅くなった。",effects:{read:2,depth:-5,trust:-3,deadline:8}},
+  {name:"後日追加確認をお願いする",result:"信頼は保てたが、締切は厳しくなった。",effects:{trust:5,accuracy:5,deadline:-10,risk:-3}}
+ ]},
+ {title:"読者目線を見失う",text:"話が深くなりすぎて、読者に何が伝わる記事なのか分からなくなってきた。",choices:[
+  {name:"読者に何を持ち帰ってほしいか考える",result:"記事の価値が整理され、構成が見えてきた。",effects:{depth:4,accuracy:4,read:4,deadline:-4}},
+  {name:"相手の言葉をそのまま大事にする",result:"温度は残ったが、読者への翻訳は少し弱くなった。",effects:{trust:5,depth:3,read:-3}},
+  {name:"読まれそうな見出しを先に考える",result:"入口は強くなったが、やや記事がタイトルに引っ張られた。",effects:{read:10,risk:10,accuracy:-8}}
+ ]}
+];
+
+
+const personEvents = {
+ ramen:[
+  {
+   title:"常連客の一言",
+   text:"取材中、常連客が店に入ってきた。店主を見るなり、少し照れくさそうに笑う。",
+   speaker:"この店がなかったら、俺はこの街を出てたかもしれないな。",
+   choices:[
+    {name:"常連客にも短く話を聞く",result:"第三者の証言が加わり、店の存在感が立体的になった。",effects:{trust:5,accuracy:6,depth:5,deadline:-6,stamina:-3},memo:"常連客にとって、この店は街に残る理由になっていた",kind:"third"},
+    {name:"店主の反応を観察する",result:"店主は照れ隠しのように背を向けた。その沈黙に、店への誇りがにじんでいた。",effects:{depth:7,trust:4,deadline:-3},memo:"常連の言葉に照れる店主の背中",kind:"scene"},
+    {name:"取材の流れを優先する",result:"話はスムーズに進んだが、店が愛される理由を拾いきれなかった。",effects:{deadline:4,accuracy:-2,depth:-3}}
+   ]
+  }
+ ],
+ it:[
+  {
+   title:"社員からのチャット通知",
+   text:"起業家のスマホに社員から相談メッセージが届いた。彼は一瞬だけ表情を変える。",
+   speaker:"ちょっと待って。これは今、返さないといけないやつだ。",
+   choices:[
+    {name:"社員への返信を待つ",result:"短い返信の中に、厳しさと責任感が見えた。",effects:{trust:5,depth:6,deadline:-5},memo:"社員への短い返信に、厳しさと責任感がにじんでいた",kind:"scene"},
+    {name:"マネジメントについて追加で聞く",result:"経営者としての孤独と責任の話が引き出せた。",effects:{depth:8,accuracy:4,stamina:-4,deadline:-6},memo:"経営者は、決断の重さを毎日抱えている",kind:"issue"},
+    {name:"雑談に変えて空気を軽くする",result:"場は和んだが、仕事の核心からは少し離れた。",effects:{trust:3,read:3,depth:-3}}
+   ]
+  }
+ ],
+ zoo:[
+  {
+   title:"動物の小さな異変",
+   text:"近くの動物が落ち着かない様子を見せた。園長はすぐに気づいて立ち上がる。",
+   speaker:"すみません、あの子、今日は少し様子が違う。",
+   choices:[
+    {name:"園長の対応を見守る",result:"動物への観察眼と愛情が、その場で伝わってきた。",effects:{trust:6,depth:7,deadline:-6},memo:"園長は小さな変化にすぐ気づき、動物の様子を見に行った",kind:"scene"},
+    {name:"なぜ気づけたのか聞く",result:"毎日の観察が仕事の核だという話が聞けた。",effects:{accuracy:5,depth:6,trust:4,deadline:-5},memo:"毎日見ているからこそ、動物の小さな違和感に気づける",kind:"craft"},
+    {name:"取材を続ける",result:"時間は守れたが、園長らしさが出る瞬間を逃した。",effects:{deadline:4,depth:-4}}
+   ]
+  }
+ ],
+ book:[
+  {
+   title:"一冊の本を探す客",
+   text:"取材中、ひとりの客が古い本のタイトルを告げた。店主の目つきが少し変わる。",
+   speaker:"その本なら……たぶん奥の棚にあります。",
+   choices:[
+    {name:"本を探す様子を見せてもらう",result:"店主が本だけでなく、人の記憶を探していることが伝わった。",effects:{depth:8,trust:5,deadline:-6},memo:"店主は本ではなく、その人の記憶を探しているようだった",kind:"heart"},
+    {name:"客にも探している理由を聞く",result:"本にまつわる小さな人生の物語が拾えた。",effects:{accuracy:6,depth:6,trust:3,deadline:-7},memo:"客は亡くなった家族との記憶をたどるために本を探していた",kind:"third"},
+    {name:"店主への質問に戻る",result:"取材は進んだが、古本屋らしい偶然の物語は薄くなった。",effects:{deadline:4,depth:-3}}
+   ]
+  }
+ ],
+ idol:[
+  {
+   title:"チェキ列が途切れる",
+   text:"ライブ後の特典会。ふとチェキ列が途切れ、彼女は少しだけ寂しそうに笑った。",
+   speaker:"こういう日も、あります。でも来てくれた人がいるので。",
+   choices:[
+    {name:"その気持ちを丁寧に聞く",result:"笑顔の裏にある悔しさと覚悟が見えた。",effects:{trust:7,depth:8,risk:2,deadline:-6},memo:"チェキ列が途切れた日も、来てくれた人のために笑う覚悟",kind:"conflict"},
+    {name:"ファンに声をかける",result:"応援する側の言葉が加わり、記事に温度が出た。",effects:{accuracy:6,trust:5,read:4,deadline:-6},memo:"ファンは『明日も頑張れる』と言っていた",kind:"third"},
+    {name:"明るい話題に切り替える",result:"空気は軽くなったが、本音に近づく機会は減った。",effects:{read:4,trust:2,depth:-4}}
+   ]
+  }
+ ],
+ care:[
+  {
+   title:"利用者さんの呼びかけ",
+   text:"廊下を歩いていると、利用者さんが職員に向かって手を振った。",
+   speaker:"あなたが来ると、なんだか安心するのよ。",
+   choices:[
+    {name:"その場のやりとりを見守る",result:"介護が作業ではなく、関係性の仕事だと伝わってきた。",effects:{trust:7,depth:7,risk:-3,deadline:-5},memo:"利用者の『安心する』という言葉に、仕事の意味が詰まっていた",kind:"third"},
+    {name:"職員に今の言葉の意味を聞く",result:"報われる瞬間について、深い言葉が引き出せた。",effects:{depth:8,trust:5,deadline:-6},memo:"名前を呼ばれること、安心されることが仕事を続ける力になる",kind:"heart"},
+    {name:"忙しそうなので先を急ぐ",result:"現場のテンポは守れたが、温度のある場面を逃した。",effects:{deadline:4,depth:-4,trust:-1}}
+   ]
+  }
+ ],
+ game:[
+  {
+   title:"プレイヤーからの感想メール",
+   text:"開発者が、少し照れながら一通のメールを見せてくれた。",
+   speaker:"この感想がなかったら、たぶん完成してなかったです。",
+   choices:[
+    {name:"感想メールの話を深掘りする",result:"作り手とプレイヤーの関係が、記事の芯になりそうだ。",effects:{trust:6,depth:8,read:4,deadline:-6},memo:"たった一人の感想が、ゲームを完成まで導いた",kind:"third"},
+    {name:"開発を続ける苦しさを聞く",result:"創作の孤独と、それでも作る理由が見えてきた。",effects:{depth:9,trust:3,risk:2,stamina:-5,deadline:-6},memo:"完成しない不安の中で、プレイヤーの声だけが支えになった",kind:"conflict"},
+    {name:"ゲーム内容の説明に戻る",result:"情報は整理できたが、作り手の感情は少し薄くなった。",effects:{accuracy:4,depth:-3,deadline:2}}
+   ]
+  }
+ ],
+ farmer:[
+  {
+   title:"突然の雨",
+   text:"畑を歩いている途中、急に雨が降ってきた。若手農家は空を見上げて走り出す。",
+   speaker:"すみません、ちょっと作物を見てきます。",
+   choices:[
+    {name:"一緒に畑へ向かう",result:"天気ひとつで仕事が変わる現場感を体で理解できた。",effects:{trust:7,depth:7,accuracy:5,stamina:-8,deadline:-6},memo:"突然の雨に走る姿から、農業が天気と隣り合わせの仕事だと分かった",kind:"issue"},
+    {name:"雨のリスクについて聞く",result:"自然相手の怖さと覚悟が言葉になった。",effects:{depth:8,accuracy:6,deadline:-5},memo:"天気ひとつで収入が変わる怖さがある",kind:"issue"},
+    {name:"屋根のある場所で待つ",result:"体力は温存できたが、現場のリアルを少し逃した。",effects:{stamina:4,deadline:2,depth:-4}}
+   ]
+  }
+ ]
+};
+
+
+const happeningCorrectIndex = {
+ "気まずい沈黙":0,
+ "相手からの逆質問":0,
+ "編集部から催促":1,
+ "録音トラブル":0,
+ "相手の表情が曇る":0,
+ "第三者が割り込んでくる":2,
+ "オフレコ発言":0,
+ "写真撮影の許可":0,
+ "SNSで先に噂が流れる":1,
+ "取材相手が泣きそうになる":0,
+ "相手の予定が早まる":0,
+ "読者目線を見失う":0
+};
+
+const personEventCorrectIndex = {
+ "常連客の一言":0,
+ "社員からのチャット通知":0,
+ "動物の小さな異変":0,
+ "一冊の本を探す客":0,
+ "チェキ列が途切れる":0,
+ "利用者さんの呼びかけ":0,
+ "プレイヤーからの感想メール":0,
+ "突然の雨":0
+};
+
+function showGameOver(title,result,correctName){
+ el.phaseTitle.textContent="ゲームオーバー";
+ el.phaseBadge.textContent="取材失敗";
+ scene(
+  "GAME OVER",
+  "ハプニング対応を誤り、取材相手との信頼関係が崩れてしまいました。",
+  `<div class="comment-box"><strong>今回の判断：</strong><br>${result}</div>
+   <div class="comment-box"><strong>編集長：</strong><br>取材は、話を聞くだけじゃない。現場での一瞬の判断が、記事にできるかどうかを分けるんだ。</div>
+   <div class="bubble system">正解対応：${correctName}</div>`
+ );
+ choices([{name:"最初からやり直す",action:startGame}]);
+ updateHUD();
+}
+
+function showReasonGameOver(title,reason,editor,detail=""){
+ el.phaseTitle.textContent="ゲームオーバー";
+ el.phaseBadge.textContent=title;
+ scene(
+  "GAME OVER",
+  reason,
+  `<div class="comment-box"><strong>ゲームオーバー理由：</strong><br>${title}</div>
+   ${detail?`<div class="comment-box"><strong>詳細：</strong><br>${detail}</div>`:""}
+   <div class="comment-box"><strong>編集長：</strong><br>${editor}</div>`
+ );
+ choices([{name:"最初からやり直す",action:startGame}]);
+ updateHUD();
+ return true;
+}
+function checkCriticalGameOver(context=""){
+ if(state.trust<=0){
+  return showReasonGameOver(
+   "信頼0：取材打ち切り",
+   "信頼が完全に失われ、取材相手から取材終了を告げられました。",
+   "相手の時間と人生を預かっている自覚が足りなかった。今日は撤収だ。",
+   context
+  );
+ }
+ if(state.risk>=100){
+  return showReasonGameOver(
+   "炎上100：公開前炎上",
+   "公開前から憶測や誤解が広がり、編集部に抗議が入りました。",
+   "読まれる前に燃える記事を書いてどうする。",
+   context
+  );
+ }
+ if(state.accuracy<=0){
+  return showReasonGameOver(
+   "正確性0：記事差し戻し",
+   "事実確認のミスが重なり、記事として公開できなくなりました。",
+   "これは記事じゃない。危ないメモだ。",
+   context
+  );
+ }
+ return false;
+}
+
+
+const characterImages = {
+ ramen:"ramen.png",
+ it:"it.png",
+ zoo:"zoo.png",
+ book:"book.png",
+ idol:"idol.png",
+ care:"care.png",
+ game:"game.png",
+ farmer:"farmer.png"
+};
+function characterImg(id,cls="person-visual"){
+ const src=characterImages[id];
+ if(!src)return "";
+ if(cls==="person-card-img")return `<img class="person-card-img" src="${src}" alt="">`;
+ return `<div class="person-visual"><img src="${src}" alt="${people[id]?.name||""}"></div>`;
+}
+
+let state;
+const el={startBtn:document.getElementById("startBtn"),howBtn:document.getElementById("howBtn"),resetBtn:document.getElementById("resetBtn"),phaseTitle:document.getElementById("phaseTitle"),phaseBadge:document.getElementById("phaseBadge"),scene:document.getElementById("scene"),choices:document.getElementById("choices")};
+
+function clamp(v,min=0,max=100){return Math.max(min,Math.min(max,v))}
+function fmt(n){return Math.round(n).toLocaleString("ja-JP")}
+function initState(){
+ state={articleIndex:0,questionIndex:0,prompt:null,person:null,plan:null,preps:[],usedPeople:[],trust:0,depth:0,read:0,accuracy:0,risk:0,deadline:100,stamina:100,budget:100,materials:[],selectedMaterialIdx:[],selectedAngle:null,selectedTitle:null,askedQuestions:[],published:[],totalPv:0,totalTrust:0,totalDepth:0,totalAccuracy:0,totalRisk:0,totalRead:0,skillPoints:0,skillLevels:{listen:0,structure:0,title:0,fact:0},achievements:[]};
+}
+function resetArticle(){
+ state.questionIndex=0;state.plan=null;state.preps=[];state.person=null;
+ state.trust=18+state.skillLevels.listen*5;state.depth=8+state.skillLevels.structure*5;state.read=8+state.skillLevels.title*5;state.accuracy=8+state.skillLevels.fact*5;state.risk=Math.max(0,10-state.skillLevels.fact*3);
+ state.deadline=85;state.stamina=85;state.budget=85;state.materials=[];state.selectedMaterialIdx=[];state.selectedAngle=null;state.selectedTitle=null;state.askedQuestions=[];
+}
+function apply(e){if(!e)return;["trust","depth","read","accuracy","risk","deadline","stamina","budget"].forEach(k=>state[k]=clamp(state[k]+(e[k]||0)))}
+function scene(title,text,message="",extra=""){el.scene.innerHTML=`<h2 class="scene-title">${title}</h2><p class="scene-text">${text}</p>${extra}${message?`<div class="dialogue">${message}</div>`:""}`}
+function choices(items){
+ el.choices.innerHTML=items.map((item,i)=>`<button class="choice ${item.disabled?"disabled":""}" data-i="${i}"><span class="choice-title">${item.name}</span>${item.desc?`<span class="choice-desc">${item.desc}</span>`:""}${item.tags?`<span class="tags">${item.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</span>`:""}</button>`).join("");
+ [...el.choices.querySelectorAll("button")].forEach((btn,i)=>{if(!items[i].disabled)btn.onclick=items[i].action});
+}
+function updateHUD(){
+ document.getElementById("articleNum").textContent=`${Math.min(state.articleIndex+1,MAX_ARTICLES)}/${MAX_ARTICLES}`;
+ document.getElementById("questionNum").textContent=`${state.questionIndex}/${MAX_QUESTIONS}`;
+ ["deadline","stamina","budget","trust","depth","read","accuracy","risk"].forEach(id=>{document.getElementById(id+"Stat").textContent=Math.round(state[id]);document.getElementById(id+"Bar").style.width=`${state[id]}%`});
+ renderSide();
+}
+function renderSide(){
+ document.getElementById("materialCount").textContent=`${state.materials.length}件`;
+ document.getElementById("materials").innerHTML=state.materials.length?state.materials.map((m,i)=>`<div class="item ${state.selectedMaterialIdx.includes(i)?"selected":""}"><strong>${m.text}</strong><p>${m.kindLabel} / ${state.selectedMaterialIdx.includes(i)?"選択中":"未選択"}</p></div>`).join(""):`<div class="item"><p>まだメモはありません</p></div>`;
+ document.getElementById("publishedCount").textContent=`${state.published.length}本`;
+ document.getElementById("publishedList").innerHTML=state.published.length?state.published.map((a,i)=>`<div class="item"><strong>${i+1}. ${a.title}</strong><p>${a.person} / ${a.type} / PV:${fmt(a.pv)}</p></div>`).join(""):`<div class="item"><p>公開記事なし</p></div>`;
+ document.getElementById("skillPointBadge").textContent=`${state.skillPoints}P`;
+ document.getElementById("skills").innerHTML=skills.map(s=>`<div class="skill"><strong>${s.name} Lv.${state.skillLevels[s.id]}</strong><p>${s.desc}</p></div>`).join("");
+}
+function startGame(){initState();showEditorBrief()}
+function showHow(){
+ el.phaseTitle.textContent="遊び方";el.phaseBadge.textContent="説明";
+ scene("取材ライターの判断を体験しよう","5本の記事を書きます。一度選んだ取材相手は次回以降選べません。取材相手との信頼、読者に届く切り口、事実確認、炎上リスクのバランスを見ながら記事を完成させます。",`<div class="bubble system">締切・体力・予算が尽きると、記事の質や安全性に影響します。</div><div class="bubble system">質問には地雷もあります。信頼が高ければ本音を引き出せますが、低いと関係が悪化します。</div><div class="bubble system">ハプニングでは正解対応を選ばないと即ゲームオーバーになります。信頼0・炎上100・正確性0でもゲームオーバーです。難易度アップ版では初期値が低く、deep/sharp質問の消費も重くなっています。地雷注意タグは準備や裏取り力がある時だけ表示されます。</div><div class="bubble system">最後は8種類のマルチエンディングに分岐します。</div>`);
+ choices([{name:"ゲームを開始する",action:startGame}]);updateHUD();
+}
+
+function skillStartBonusText(){
+ const parts=[];
+ if(state.skillLevels.listen>0)parts.push(`傾聴力 Lv.${state.skillLevels.listen}：記事開始時 信頼 +${state.skillLevels.listen*5} / 質問時 信頼 +${state.skillLevels.listen*2}`);
+ if(state.skillLevels.structure>0)parts.push(`構成力 Lv.${state.skillLevels.structure}：記事開始時 深掘り +${state.skillLevels.structure*5} / 質問時 深掘り +${state.skillLevels.structure*2}`);
+ if(state.skillLevels.title>0)parts.push(`タイトル力 Lv.${state.skillLevels.title}：記事開始時 PV力 +${state.skillLevels.title*5} / 公開時 PV +${state.skillLevels.title*500}`);
+ if(state.skillLevels.fact>0)parts.push(`裏取り力 Lv.${state.skillLevels.fact}：記事開始時 正確性 +${state.skillLevels.fact*5}・炎上 -${state.skillLevels.fact*3} / 質問時 正確性 +${state.skillLevels.fact*2}・炎上 -${state.skillLevels.fact*2}`);
+ return parts.length?`<div class="bubble system"><strong>現在のスキル補正</strong><br>${parts.join("<br>")}</div>`:"";
+}
+function skillUpgradeDesc(s){
+ const lv=state.skillLevels[s.id],next=lv+1;
+ if(s.id==="listen")return `現在 Lv.${lv} → Lv.${next} / 記事開始時 信頼 +${next*5}、質問時 信頼 +${next*2}`;
+ if(s.id==="structure")return `現在 Lv.${lv} → Lv.${next} / 記事開始時 深掘り +${next*5}、質問時 深掘り +${next*2}`;
+ if(s.id==="title")return `現在 Lv.${lv} → Lv.${next} / 記事開始時 PV力 +${next*5}、公開時 PV +${next*500}`;
+ if(s.id==="fact")return `現在 Lv.${lv} → Lv.${next} / 記事開始時 正確性 +${next*5}・炎上 -${next*3}、質問時 正確性 +${next*2}・炎上 -${next*2}、確認時に追加補正`;
+ return `現在 Lv.${lv} → Lv.${next}`;
+}
+
+function showEditorBrief(){
+ if(state.articleIndex>=MAX_ARTICLES){showEnding();return}
+ resetArticle();state.prompt=prompts[state.articleIndex];
+ el.phaseTitle.textContent=`記事${state.articleIndex+1}`;el.phaseBadge.textContent="編集長のお題";
+ scene(`テーマ：「${state.prompt.theme}」`,"編集長から取材テーマが渡された。まずは記事の方針を決めよう。",`<div class="bubble editor">編集長：${state.prompt.editor}</div>${skillStartBonusText()}`);
+ choices([{name:"企画方針を決める",action:choosePlan}]);updateHUD();
+}
+function choosePlan(){
+ el.phaseTitle.textContent="企画方針";el.phaseBadge.textContent="STEP 1";
+ scene("どんな記事にする？","取材は聞く前から始まっている。どの方向で相手に向き合うかを決めよう。");
+ choices(planTypes.map(p=>({name:p.name,desc:p.desc,tags:p.tags,action:()=>{state.plan=p;apply(p.effects);choosePreps()}})));
+ updateHUD();
+}
+function choosePreps(){
+ el.phaseTitle.textContent="事前準備";el.phaseBadge.textContent=`${state.preps.length}/${PREP_COUNT}`;
+ const picked=state.preps.map(p=>p.id);
+ scene("取材前に何を準備する？",`2つ選んでください。現在の方針：${state.plan.name}`);
+ const list=prepOptions.map(p=>({name:`${picked.includes(p.id)?"✓":"・"} ${p.name}`,desc:p.desc,tags:p.tags,action:()=>togglePrep(p)}));
+ if(state.preps.length===PREP_COUNT)list.push({name:"取材相手を選ぶ",desc:"準備を終えて、現場へ向かいます。",action:choosePerson});
+ choices(list);updateHUD();
+}
+function reverseEffects(e){const r={};Object.keys(e).forEach(k=>r[k]=-e[k]);return r}
+function togglePrep(p){const idx=state.preps.findIndex(x=>x.id===p.id);if(idx>=0){state.preps.splice(idx,1);apply(reverseEffects(p.effects))}else{if(state.preps.length>=PREP_COUNT)return;state.preps.push(p);apply(p.effects)}choosePreps()}
+function choosePerson(){
+ el.phaseTitle.textContent="取材相手";el.phaseBadge.textContent="STEP 2";
+ let availableIds=state.prompt.candidates.filter(id=>!state.usedPeople.includes(id));
+ if(availableIds.length===0)availableIds=Object.keys(people).filter(id=>!state.usedPeople.includes(id));
+ scene("誰に話を聞く？",availableIds.length>0?"同じテーマでも、誰に聞くかで記事はまったく変わる。一度取材した相手は今回は選べません。":"すべての取材相手に話を聞き終えました。");
+ if(availableIds.length===0){choices([{name:"最終評価を見る",desc:"取材相手が全員取材済みです。",action:showEnding}]);updateHUD();return}
+ choices(availableIds.map(id=>{const p=people[id];return {name:p.name,desc:`${characterImg(id,"person-card-img")}${p.intro}`,action:()=>startInterview(p)}}));
+ updateHUD();
+}
+function startInterview(p){
+ state.person=p;
+ if(!state.usedPeople.includes(p.id))state.usedPeople.push(p.id);
+ el.phaseTitle.textContent="取材開始";el.phaseBadge.textContent=p.name;
+ scene(`取材開始：${p.name}`,"挨拶をして席についた。相手の時間をもらっていることを忘れないように。",`${characterImg(p.id)}<div class="bubble guest">${p.first}</div>`);
+ choices([{name:"質問を始める",action:askQuestion}]);updateHUD();
+}
+
+function canSeeLandmineHint(){
+ return state.skillLevels.fact>=1 || state.preps.some(p=>p.id==="past" || p.id==="questions");
+}
+
+function askQuestion(){
+ if(state.questionIndex>=MAX_QUESTIONS){selectMaterials();return}
+ el.phaseTitle.textContent=`質問 ${state.questionIndex+1}/${MAX_QUESTIONS}`;el.phaseBadge.textContent="取材中";
+ let warning="";if(state.stamina<=25)warning+=`<div class="bubble system">体力が少なく、深い質問の精度が落ちそうです。</div>`;if(state.deadline<=25)warning+=`<div class="bubble system">締切が迫っています。聞き漏らしに注意。</div>`;
+ scene("何を聞く？","相手の様子、ここまでの流れ、そして記事の方針を考えて質問を選ぼう。",`${characterImg(state.person.id)}${warning}`);
+ const available=state.person.questions.filter(q=>!state.askedQuestions.includes(q.id));
+ choices(available.map(q=>({name:q.q,desc:questionHint(q),tags:[q.type==="sharp"?"鋭い質問":"質問",(isLandmine(q)&&canSeeLandmineHint())?"地雷注意":""].filter(Boolean),action:()=>selectQuestion(q)})));
+ updateHUD();
+}
+function questionHint(q){if(q.type==="sharp")return"本音が聞ける可能性もあるが、関係が崩れる危険もある。";if(q.type==="empathy")return"信頼が高いほど、深い話につながりやすい。";if(q.type==="funny")return"場が和むこともあるが、滑ることもある。";if(q.type==="third")return"第三者の声は記事の説得力を上げる。";if(q.type==="respect")return"相手への敬意が伝わりやすい。";return"基本的な質問。空気を整えやすい。"}
+function isLandmine(q){return state.person.landmines.some(word=>q.q.includes(word))}
+function selectQuestion(q){
+ state.questionIndex++;state.askedQuestions.push(q.id);
+ const res=evaluateQuestion(q);apply(res.effects);if(checkCriticalGameOver("質問対応で危険値に到達しました。"))return;
+ if(res.getMemo)state.materials.push({text:res.memoText,kind:q.kind,kindLabel:kindLabel(q.kind),used:false});
+ if(state.questionIndex<MAX_QUESTIONS&&Math.random()<0.30){
+  if(triggerPersonEvent(q,res))return;
+ }
+ if(state.questionIndex<MAX_QUESTIONS&&Math.random()<0.42){triggerHappening(q,res);return}
+ showQuestionResult(q,res);
+}
+function evaluateQuestion(q){
+ let e={...q.effects},reply=q.note,systemMsg="メモを獲得した。",getMemo=true,skillMessages=[];
+ const highTrust=state.trust>=55,lowStamina=state.stamina<=20,lowDeadline=state.deadline<=20,landmine=isLandmine(q);
+ if(state.skillLevels.listen>0){const b=state.skillLevels.listen*2;e.trust=(e.trust||0)+b;skillMessages.push(`傾聴力 Lv.${state.skillLevels.listen} 発動：信頼 +${b}`)}
+ if(state.skillLevels.structure>0){const b=state.skillLevels.structure*2;e.depth=(e.depth||0)+b;skillMessages.push(`構成力 Lv.${state.skillLevels.structure} 発動：深掘り +${b}`)}
+ if(state.skillLevels.fact>0){const a=state.skillLevels.fact*2,r=state.skillLevels.fact*2;e.accuracy=(e.accuracy||0)+a;e.risk=(e.risk||0)-r;skillMessages.push(`裏取り力 Lv.${state.skillLevels.fact} 発動：正確性 +${a} / 炎上 -${r}`)}
+ if(landmine&&!highTrust){e.trust=(e.trust||0)-18;e.risk=(e.risk||0)+18;e.accuracy=(e.accuracy||0)-6;e.depth=(e.depth||0)-4;reply="……それ、どういう切り口で書くつもりですか？";systemMsg="地雷に触れてしまい、相手が警戒した。"}else if(landmine&&highTrust){e.depth=(e.depth||0)+8;e.trust=(e.trust||0)+2;systemMsg="踏み込んだ質問だったが、信頼があったため本音を話してくれた。"}
+ if(q.type==="deep"){
+  e.stamina=(e.stamina||0)-3;
+  e.deadline=(e.deadline||0)-2;
+  systemMsg += " 深い質問は集中力と時間を大きく使った。";
+ }
+ if(q.type==="sharp"){
+  e.trust=(e.trust||0)-2;
+  e.risk=(e.risk||0)+3;
+  systemMsg += " 鋭い質問は場の緊張を高めた。";
+ }
+ if(q.type==="safe"){e.trust=(e.trust||0)+4;systemMsg="空気が少し和らいだ。"}
+ if(q.type==="empathy"){if(highTrust){e.depth=(e.depth||0)+5;e.trust=(e.trust||0)+4;systemMsg="相手が心を開いてくれた。"}else systemMsg="無難には答えてくれたが、まだ距離がある。"}
+ if(q.type==="deep"){if(highTrust){e.depth=(e.depth||0)+8;e.trust=(e.trust||0)+3;systemMsg="核心に近い話が聞けた。"}else{e.trust=(e.trust||0)-5;e.risk=(e.risk||0)+5;reply="それは、今ここで話すことですかね。";systemMsg="少し踏み込みすぎた。"}}
+ if(q.type==="sharp"){if(highTrust){e.depth=(e.depth||0)+6;e.risk=(e.risk||0)+2;systemMsg="鋭い質問に、本音で返してくれた。"}else{e.trust=(e.trust||0)-10;e.risk=(e.risk||0)+8;reply="そういう記事にしたいだけでしょう。";systemMsg="相手の表情が硬くなった。"}}
+ if(q.type==="funny"){if(Math.random()<0.55){e.trust=(e.trust||0)+5;e.read=(e.read||0)+5;systemMsg="相手が笑ってくれた。場がほぐれた。"}else{e.trust=(e.trust||0)-4;reply="……はあ。";systemMsg="少し滑ってしまった。"}}
+ if(q.type==="respect"){e.trust=(e.trust||0)+6;systemMsg="敬意が伝わり、相手の言葉に熱がこもった。"}
+ if(lowStamina){e.depth=(e.depth||0)-6;e.accuracy=(e.accuracy||0)-5;systemMsg+=" 体力が限界に近く、聞き取りと深掘りの精度が大きく落ちた。"}
+ if(lowDeadline){e.accuracy=(e.accuracy||0)-6;e.risk=(e.risk||0)+6;systemMsg+=" 締切に追われ、確認不足と誤解のリスクが大きく増えた。"}
+ if(state.budget<=20){e.accuracy=(e.accuracy||0)-3;e.read=(e.read||0)-3;systemMsg+=" 予算不足で追加確認や現場体験が弱くなった。"}
+ return {effects:e,reply,systemMsg,getMemo,memoText:q.note,skillMessages};
+}
+function showQuestionResult(q,res){
+ el.phaseTitle.textContent="質問結果";el.phaseBadge.textContent="取材中";
+ scene("相手の反応",res.systemMsg,`${characterImg(state.person.id)}<div class="bubble you">${q.q}</div><div class="bubble guest">${res.reply}</div>${res.skillMessages&&res.skillMessages.length?`<div class="bubble system"><strong>スキル効果</strong><br>${res.skillMessages.join("<br>")}</div>`:""}`);
+ choices([{name:state.questionIndex>=MAX_QUESTIONS?"記事の構成を考える":"次の質問へ",action:state.questionIndex>=MAX_QUESTIONS?selectMaterials:askQuestion}]);updateHUD();
+}
+function triggerHappening(q,res){
+ const hap=happenings[Math.floor(Math.random()*happenings.length)];
+ el.phaseTitle.textContent="思わぬ事態";el.phaseBadge.textContent="ハプニング";
+ scene(hap.title,hap.text,`${characterImg(state.person.id)}${hap.speaker?`<div class="bubble guest">${hap.speaker}</div>`:`<div class="bubble guest">${res.reply}</div>`}${res.skillMessages&&res.skillMessages.length?`<div class="bubble system"><strong>スキル効果</strong><br>${res.skillMessages.join("<br>")}</div>`:""}`);
+ const correctIdx=happeningCorrectIndex[hap.title] ?? 0;
+ choices(hap.choices.map((c,i)=>({name:c.name,action:()=>{
+  if(c.instantGameOver){
+   showReasonGameOver(c.gameOverTitle||"重大な取材倫理違反",c.result,c.editor||"この判断は、ライターとして超えてはいけない一線だ。",hap.title);
+   return;
+  }
+  if(i!==correctIdx){
+   if(hap.title==="オフレコ発言"&&c.name.includes("こっそり")){
+    showReasonGameOver("オフレコ破り",c.result,"オフレコを破ったら、ライターとして終わりだ。",hap.title);
+   }else{
+    showGameOver(hap.title,c.result,hap.choices[correctIdx].name);
+   }
+   return;
+  }
+  apply(c.effects);
+  if(checkCriticalGameOver("ハプニング対応で危険値に到達しました。"))return;
+  scene("結果",c.result,`<div class="bubble system">ハプニング対応成功！ 取材を継続できます。</div>`);
+  choices([{name:state.questionIndex>=MAX_QUESTIONS?"記事の構成を考える":"次へ",action:state.questionIndex>=MAX_QUESTIONS?selectMaterials:askQuestion}]);
+  updateHUD();
+ }})));
+ updateHUD();
+}
+function kindLabel(k){return {craft:"こだわり",heart:"感情",gap:"ギャップ",issue:"課題",third:"第三者の声",conflict:"葛藤",quote:"名言",future:"未来"}[k]||"素材"}
+function selectMaterials(){
+ el.phaseTitle.textContent="構成";el.phaseBadge.textContent=`${state.selectedMaterialIdx.length}/${USE_MATERIAL_COUNT}`;
+ scene("記事に使うメモを選ぶ","集めた情報から、記事の軸となるメモを3つ選ぼう。組み合わせによって記事タイプが変わります。",characterImg(state.person.id));
+ const list=state.materials.map((m,i)=>({name:`${state.selectedMaterialIdx.includes(i)?"✓":"・"} ${m.text}`,desc:`分類：${m.kindLabel}`,action:()=>toggleMaterial(i)}));
+ if(state.selectedMaterialIdx.length===USE_MATERIAL_COUNT){const type=judgeArticleType();list.push({name:"この内容で切り口を決める",desc:`現在の素材タイプ：${type.name}`,tags:[type.name],action:chooseAngle})}
+ choices(list);updateHUD();
+}
+function toggleMaterial(i){const idx=state.selectedMaterialIdx.indexOf(i);if(idx>=0)state.selectedMaterialIdx.splice(idx,1);else{if(state.selectedMaterialIdx.length>=USE_MATERIAL_COUNT)return;state.selectedMaterialIdx.push(i)}selectMaterials()}
+function selectedKinds(){return state.selectedMaterialIdx.map(i=>state.materials[i].kind)}
+function judgeArticleType(){
+ const kinds=selectedKinds(),has=k=>kinds.includes(k);
+ let type={id:"normal",name:"標準記事",effects:{},comment:"素材は揃っているが、記事の軸はやや普通。"};
+ if(has("heart")&&has("quote")&&has("third"))type={id:"human",name:"人情記事",effects:{trust:8,depth:6,read:5,risk:-4},comment:"相手の人生、言葉、周囲の声がつながり、温度のある記事になりそうだ。"};
+ else if(has("issue")&&has("third"))type={id:"social",name:"課題提起記事",effects:{accuracy:8,depth:7,read:5,risk:2},comment:"個人の話を社会的なテーマへ広げられる素材が揃った。"};
+ else if(has("gap")&&has("quote"))type={id:"gap",name:"ギャップ記事",effects:{read:10,trust:2,risk:3},comment:"意外性と本人の言葉があり、読まれやすい記事になりそうだ。"};
+ else if(has("conflict")&&has("future"))type={id:"story",name:"再起ストーリー",effects:{depth:9,trust:4,read:6,risk:-1},comment:"挫折から未来へ向かう流れが見える。読後感のある記事にできそうだ。"};
+ else if(has("craft")&&has("quote"))type={id:"craft",name:"職人密着記事",effects:{trust:5,depth:7,accuracy:3,risk:-2},comment:"こだわりと本人の言葉が噛み合い、芯のある記事になりそうだ。"};
+ return type;
+}
+function chooseAngle(){
+ const type=judgeArticleType();apply(type.effects);
+ el.phaseTitle.textContent="切り口";el.phaseBadge.textContent="構成";
+ scene("記事の切り口を決める",type.comment,`${characterImg(state.person.id)}<div class="bubble system">素材タイプ：${type.name}</div>`);
+ choices(state.person.angles.map(a=>({name:a.name,desc:a.desc,action:()=>{state.selectedAngle=a;apply(a.effects);chooseTitle()}})));updateHUD();
+}
+function chooseTitle(){
+ el.phaseTitle.textContent="タイトル";el.phaseBadge.textContent="構成";
+ scene("タイトルを決める","読者の入口になる大事な部分。読まれることと、相手を雑に扱わないことのバランスを考えよう。",characterImg(state.person.id));
+ choices(state.person.titles.map(t=>({name:t.text,desc:t.id==="click"?"読まれやすいが、炎上・不信感に注意。":"比較的安全なタイトル。",action:()=>{state.selectedTitle=t;apply(t.effects);editorCheck()}})));updateHUD();
+}
+function editorCheck(){
+ el.phaseTitle.textContent="編集長チェック";el.phaseBadge.textContent="中間確認";
+ let msg="素材はある。あとは、読者に何を持って帰ってもらうかだ。";
+ if(state.read>=65&&state.risk>=50)msg="読まれそうではある。でも、その読まれ方で取材相手は幸せか？";
+ else if(state.trust>=65&&state.depth>=60)msg="いい。情報じゃなくて、人を書けている。あとはタイトルで逃げるな。";
+ else if(state.accuracy<35)msg="面白いが、裏取りが弱い。ここを放置すると危ない。";
+ else if(state.deadline<25)msg="締切がかなり厳しい。完璧主義より、最低限の確認を優先しろ。";
+ scene("編集長からのダメ出し","公開前、編集長が原稿に目を通した。",`<div class="bubble editor">編集長：${msg}</div>`);
+ choices([
+  {name:"読者の学びを強める",desc:"記事の価値を整理する。深掘りと正確性が上がる。",action:()=>{apply({depth:5,accuracy:5,read:2,deadline:-5,stamina:-3});chooseConfirmation()}},
+  {name:"取材相手の言葉を中心にする",desc:"信頼と読後感を強める。",action:()=>{apply({trust:6,depth:4,risk:-2,deadline:-4});chooseConfirmation()}},
+  {name:"タイトルの勢いで押し切る",desc:"PVは伸びるが、リスクも上がる。",action:()=>{apply({read:8,risk:7,trust:-3});chooseConfirmation()}}
+ ]);updateHUD();
+}
+function chooseConfirmation(){
+ el.phaseTitle.textContent="掲載前確認";el.phaseBadge.textContent="最終確認";
+ scene("公開前に確認する？","確認すればリスクは減る。ただし、締切や記事の勢いにも影響する。",characterImg(state.person.id));
+ choices(confirmationOptions.map(c=>({name:c.name,desc:c.desc,tags:c.tags,action:()=>publish(c)})));updateHUD();
+}
+
+function generateArticlePreview(type){
+ const selected=state.selectedMaterialIdx.map(i=>state.materials[i]);
+ const m1=selected[0]?.text||"現場で拾った小さな言葉";
+ const m2=selected[1]?.text||"相手の表情に残った迷い";
+ const m3=selected[2]?.text||"これからに向けた願い";
+ const person=state.person?state.person.name:"取材相手";
+ const title=state.selectedTitle?state.selectedTitle.text:"仮タイトル";
+ let lead="";
+ if(type.id==="human"||type.id==="story"){
+  lead=`${person}の言葉は、静かだった。けれど、その奥には、簡単には語りきれない時間があった。`;
+ }else if(type.id==="social"){
+  lead=`${person}の話を聞いていると、ひとりの物語の奥に、いまの社会が抱える課題が見えてくる。`;
+ }else if(type.id==="gap"){
+  lead=`第一印象だけでは分からない。${person}には、思わず誰かに話したくなる意外な一面があった。`;
+ }else if(type.id==="craft"){
+  lead=`${person}が大切にしているのは、派手な言葉ではなく、毎日の積み重ねだった。`;
+ }else{
+  lead=`${person}への取材は、ひとつの言葉からゆっくりと始まった。`;
+ }
+ return `
+  <div class="comment-box">
+   <strong>完成記事プレビュー：</strong><br>
+   <span style="font-weight:700;">${title}</span><br><br>
+   ${lead}<br><br>
+   取材メモには、こんな言葉が残っている。<br>
+   「${m1}」<br>
+   「${m2}」<br>
+   「${m3}」<br><br>
+   それは単なる情報ではなく、その人が何を大切にしてきたのかを示す手がかりだった。
+   読者に届く記事にするため、あなたは言葉の強さと、相手への敬意のあいだで最後まで迷い続けた。
+  </div>
+ `;
+}
+function triggerPersonEvent(q,res){
+ const list=personEvents[state.person.id]||[];
+ if(!list.length)return false;
+ const ev=list[Math.floor(Math.random()*list.length)];
+ el.phaseTitle.textContent="専用イベント";
+ el.phaseBadge.textContent=state.person.name;
+ scene(ev.title,ev.text,`${characterImg(state.person.id)}<div class="bubble guest">${ev.speaker}</div>${res.skillMessages&&res.skillMessages.length?`<div class="bubble system"><strong>スキル効果</strong><br>${res.skillMessages.join("<br>")}</div>`:""}`);
+ const correctIdx=personEventCorrectIndex[ev.title] ?? 0;
+ choices(ev.choices.map((c,i)=>({
+  name:c.name,
+  action:()=>{
+   if(c.instantGameOver){
+    showReasonGameOver(c.gameOverTitle||"重大な取材倫理違反",c.result,c.editor||"この判断は、ライターとして超えてはいけない一線だ。",ev.title);
+    return;
+   }
+   if(i!==correctIdx){
+    showGameOver(ev.title,c.result,ev.choices[correctIdx].name);
+    return;
+   }
+   apply(c.effects);
+   if(checkCriticalGameOver("専用イベント対応で危険値に到達しました。"))return;
+   if(c.memo){
+    state.materials.push({text:c.memo,kind:c.kind||"scene",kindLabel:kindLabel(c.kind||"scene"),used:false});
+   }
+   scene("結果",c.result,`${c.memo?`<div class="bubble system">専用メモ獲得：${c.memo}</div>`:""}<div class="bubble system">専用イベント対応成功！ 取材を継続できます。</div>`);
+   choices([{name:state.questionIndex>=MAX_QUESTIONS?"記事の構成を考える":"次へ",action:state.questionIndex>=MAX_QUESTIONS?selectMaterials:askQuestion}]);
+   updateHUD();
+  }
+ })));
+ updateHUD();
+ return true;
+}
+
+function publish(confirm){
+ apply(confirm.effects);if(checkCriticalGameOver("掲載前確認の判断で危険値に到達しました。"))return;
+ const type=judgeArticleType();
+ const publishBonusLines=[];
+ if(confirm.id!=="none"&&state.skillLevels.fact>0){const a=state.skillLevels.fact*2,r=state.skillLevels.fact*2;apply({accuracy:a,risk:-r});if(checkCriticalGameOver("公開前確認後の危険値チェックです。"))return;publishBonusLines.push(`裏取り力 Lv.${state.skillLevels.fact}：公開前確認を強化（正確性 +${a} / 炎上 -${r}）`)}
+ let quality=Math.round(state.trust*.24+state.depth*.27+state.accuracy*.25+state.read*.08-state.risk*.22+state.deadline*.05+state.stamina*.03);
+ if(state.deadline<=10){quality-=8;state.risk=clamp(state.risk+5)}
+ if(state.budget<=10)quality-=4;
+ let pv=Math.max(100,Math.round(900+state.read*85+state.depth*25+state.trust*12-(state.risk>70?(state.risk-70)*55:0)));
+ if(state.skillLevels.title>0){const titleBonus=state.skillLevels.title*500;pv+=titleBonus;publishBonusLines.push(`タイトル力 Lv.${state.skillLevels.title}：公開時PV +${fmt(titleBonus)}`)}
+ let rank="普通の記事";if(state.risk>=80)rank="炎上";else if(quality>=82)rank="編集部推薦";else if(pv>=9000&&state.risk<60)rank="ヒット記事";else if(quality>=70&&state.trust>=60)rank="良記事";
+ achievements.forEach(a=>{if(a.condition(state)&&!state.achievements.some(x=>x.id===a.id))state.achievements.push(a)});
+ const reactions=makeReactions(rank,type,pv);
+ state.published.push({title:state.selectedTitle.text,person:state.person.name,pv,rank,type:type.name,typeId:type.id,trust:state.trust,depth:state.depth,accuracy:state.accuracy,read:state.read,risk:state.risk});
+ state.totalPv+=pv;state.totalTrust+=state.trust;state.totalDepth+=state.depth;state.totalAccuracy+=state.accuracy;state.totalRisk+=state.risk;state.totalRead+=state.read;
+ const earned=rank==="炎上"?0:rank==="普通の記事"?1:2;state.skillPoints+=earned;
+ el.phaseTitle.textContent="公開完了";el.phaseBadge.textContent="結果";
+ scene(`『${state.selectedTitle.text}』を公開しました`,"",`<div class="result-grid"><div class="result-box"><strong>${fmt(pv)}</strong><small>獲得PV</small></div><div class="result-box"><strong>${rank}</strong><small>評価</small></div></div>${generateArticlePreview(type)}<div class="comment-box"><strong>読者：</strong><br>${reactions.reader}</div><div class="comment-box"><strong>編集長：</strong><br>${reactions.editor}</div><div class="comment-box"><strong>取材相手：</strong><br>${reactions.person}</div>${publishBonusLines.length?`<div class="bubble system"><strong>公開時スキルボーナス</strong><br>${publishBonusLines.join("<br>")}</div>`:""}<div class="bubble system">スキルポイントを ${earned}P 獲得しました。</div>`);
+ choices([{name:state.articleIndex+1>=MAX_ARTICLES?"最終評価を見る":"スキルを強化する",action:state.articleIndex+1>=MAX_ARTICLES?showEnding:skillUpgrade}]);updateHUD();
+}
+function makeReactions(rank,type,pv){
+ if(rank==="炎上")return {reader:"面白いけど、ちょっと切り取り方が強すぎない？",editor:"読まれた。だが、これは勝ちじゃない。信頼を削ってPVを買っただけだ。",person:"この書き方は、こちらの意図と少し違います。"};
+ if(state.trust>=70&&state.depth>=60)return {reader:"人柄まで伝わってきて、最後まで読んでしまった。",editor:"いい。相手の人生に踏み込んでいるが、雑に扱っていない。",person:"ここまで丁寧に書いてもらえるとは思いませんでした。"};
+ if(state.read>=75&&state.risk<60)return {reader:"タイトルに惹かれて読んだけど、中身もちゃんとあった。",editor:"入口が強い。だが、煽りすぎる一歩手前だ。そこは覚えておけ。",person:"少し派手だけど、内容は間違っていないですね。"};
+ if(state.accuracy>=70)return {reader:"派手ではないけど、情報がしっかりしていて安心して読めた。",editor:"堅いが、信頼できる。こういう記事を書ける人間は強い。",person:"事実確認が丁寧で安心しました。"};
+ return {reader:"読みやすかったけど、もう一歩だけ深い話も知りたかった。",editor:"形にはなっている。次は、この記事でしか読めない核を作れ。",person:"悪くはないですが、少し表面的だったかもしれません。"};
+}
+function skillUpgrade(){
+ el.phaseTitle.textContent="スキル成長";el.phaseBadge.textContent=`${state.skillPoints}P`;
+ if(state.skillPoints<=0){scene("今回はスキル強化なし","炎上や確認不足が響き、スキルポイントは得られなかった。次の記事で巻き返そう。");choices([{name:"次の記事へ",action:()=>{state.articleIndex++;showEditorBrief()}}]);updateHUD();return}
+ scene("ライターとして成長する","獲得したスキルポイントで、次の記事に活きる能力を伸ばそう。");
+ const list=skills.map(s=>({name:`${s.name}を上げる`,desc:skillUpgradeDesc(s),disabled:state.skillPoints<=0,action:()=>{state.skillLevels[s.id]++;state.skillPoints--;if(state.skillPoints>0)skillUpgrade();else{scene("強化完了","次の記事では、今の経験が少しだけ武器になる。");choices([{name:"次の記事へ",action:()=>{state.articleIndex++;showEditorBrief()}}]);updateHUD()}}}));
+ list.push({name:"強化せず次へ進む",desc:"ポイントを残したまま次の記事へ進みます。",action:()=>{state.articleIndex++;showEditorBrief()}});
+ choices(list);updateHUD();
+}
+function countPublishedType(id){return state.published.filter(a=>a.typeId===id).length}
+function determineEnding(){
+ const avgTrust=Math.round(state.totalTrust/MAX_ARTICLES),avgDepth=Math.round(state.totalDepth/MAX_ARTICLES),avgAcc=Math.round(state.totalAccuracy/MAX_ARTICLES),avgRisk=Math.round(state.totalRisk/MAX_ARTICLES),avgRead=Math.round(state.totalRead/MAX_ARTICLES),pv=state.totalPv;
+ const humanCount=countPublishedType("human")+countPublishedType("story"),socialCount=countPublishedType("social"),gapCount=countPublishedType("gap");
+ if(pv>=24000&&avgTrust>=65&&avgAcc>=65&&avgRisk<55)return {name:"トップライターエンド",short:"PV・信頼・正確性をすべて両立。編集長から連載の打診が来る。",text:"あなたの記事は、読まれた。しかも、取材相手を傷つけず、事実の強さも失わなかった。編集長は最後に原稿を閉じて、静かに言った。『次、連載でやってみるか』。信頼と数字。その両方を抱えて、あなたは次の現場へ向かう。",editor:"数字も取った。信頼も落としていない。こういう書き手に、次の大きい仕事を任せたい。",after:"編集部から新連載の相談が届いた。あなたの名前で、次の企画が動き出す。"};
+ if(pv>=22000&&avgRisk>=65)return {name:"炎上バズライターエンド",short:"PVは爆発したが、取材相手から抗議が来る。編集長からも厳重注意。",text:"記事は読まれた。通知は止まらなかった。けれど、その勢いと同じ速さで、取材相手から抗議の連絡が入る。『こんなつもりで話したんじゃありません』。数字は残った。でも、信頼は削れた。あなたは、読まれることの怖さを知った。",editor:"PVだけ見れば勝ちだ。でも、取材相手を失った時点で負けだ。次はないと思え。",after:"あなたの記事は話題になったが、次の取材依頼は慎重に扱われるようになった。"};
+ if(avgTrust>=78&&avgRisk<45)return {name:"信頼の聞き手エンド",short:"取材相手から次の依頼が来る。人の心に寄り添うライターになった。",text:"公開後、取材相手から短い連絡が届いた。『また、あなたに話を聞いてほしい人がいます』。大きなバズではない。けれど、あなたの記事は確かに誰かの心をほどいた。聞くことは、奪うことではない。寄り添いながら言葉を預かることだと、あなたは知った。",editor:"派手じゃない。でも、この人になら話してもいいと思わせる力がある。それは才能だ。",after:"取材相手の紹介で、新しい取材が決まった。信頼が、次の仕事を連れてきた。"};
+ if(avgAcc>=82&&avgRisk<45)return {name:"裏取り職人エンド",short:"地味だが信頼性抜群。編集部から重要案件を任される。",text:"あなたの記事は、派手な言葉で読者を煽らなかった。けれど、ひとつひとつの事実が強かった。編集長は言う。『こういう記事は、あとから効く』。長く残る灯り。その確かさが、あなたの武器になった。",editor:"地味に見えるかもしれない。でも、危ないテーマほど君みたいな書き手が必要なんだ。",after:"編集部から、調査と確認が必要な重要案件の相談が入った。"};
+ if(socialCount>=2||(avgAcc>=72&&avgDepth>=62&&avgRisk<60))return {name:"社会派ジャーナリストエンド",short:"課題提起記事で高評価。派手ではないが、読者から深い反響が届く。",text:"あなたの記事は、個人の物語をただの美談で終わらせなかった。その奥にある社会の歪み、現場の苦しさ、未来への問いをすくい上げた。読者から長い感想が届く。『考えるきっかけになりました』と。",editor:"いい記事だ。読後に残る問いがある。こういう記事は、メディアに必要だ。",after:"読者からの反響を受け、続編取材の企画が立ち上がった。"};
+ if(humanCount>=2||(avgTrust>=68&&avgDepth>=72&&avgRisk<60))return {name:"人情ドキュメンタリーライターエンド",short:"人物の人生を丁寧に描き、多くの読者の心を動かす。",text:"あなたは、取材相手を『ネタ』として扱わなかった。迷い、挫折、願い。その人の人生の温度を、記事の中に残した。『知らない人の話なのに、自分のことみたいに読んでしまった』。それは、人物を書く力だった。",editor:"人を書けるライターは強い。情報じゃなく、人生を渡せている。",after:"あなたの記事を読んだ別の人物から、『自分の話も聞いてほしい』と連絡が来た。"};
+ if((avgRead>=78||pv>=23000||gapCount>=2)&&avgRisk<70)return {name:"タイトル職人エンド",short:"読まれるタイトルでPVを稼ぐが、中身とのバランスを問われる。",text:"あなたの記事はよく読まれた。タイトルの引きが強く、読者の入口を作る力がある。だが編集長は、少しだけ目を細める。『入口はうまい。でも、入口だけで終わるなよ』。読まれる技術は武器だ。あとは、その先にちゃんと価値を置けるかどうかだ。",editor:"タイトルのセンスはある。だけど、釣った読者を満足させる中身まで作れてこそ本物だ。",after:"PVの実績を買われ、特集記事のタイトル案出しを任されることになった。"};
+ return {name:"駆け出し続行エンド",short:"まだ課題は多いが、次の取材へ向かう。",text:"すべてがうまくいったわけではない。聞き逃した言葉もある。踏み込めなかった場面もある。けれど、あなたは5本の記事を書き上げた。現場で迷い、選び、言葉にした。その経験は、次の取材で必ず効いてくる。",editor:"完璧じゃない。でも、最後まで書いた。それがまず大事だ。次はもっといい記事にしろ。",after:"あなたはメモ帳を閉じ、次の取材先へ向かう準備を始めた。"};
+}
+function showEnding(){
+ const avgTrust=Math.round(state.totalTrust/MAX_ARTICLES),avgDepth=Math.round(state.totalDepth/MAX_ARTICLES),avgAcc=Math.round(state.totalAccuracy/MAX_ARTICLES),avgRisk=Math.round(state.totalRisk/MAX_ARTICLES),avgRead=Math.round(state.totalRead/MAX_ARTICLES),ending=determineEnding();
+ el.phaseTitle.textContent="ゲームクリア";el.phaseBadge.textContent="マルチエンディング";
+ scene("5本の記事を書き上げました",ending.short,`<div style="text-align:center;margin:10px 0 16px;"><h2 style="margin:0 0 10px;">${ending.name}</h2></div><div class="comment-box">${ending.text}</div><div class="result-grid"><div class="result-box"><strong>${fmt(state.totalPv)}</strong><small>総PV</small></div><div class="result-box"><strong>${avgTrust}</strong><small>平均信頼</small></div><div class="result-box"><strong>${avgDepth}</strong><small>平均深掘り</small></div><div class="result-box"><strong>${avgAcc}</strong><small>平均正確性</small></div><div class="result-box"><strong>${avgRead}</strong><small>平均PV力</small></div><div class="result-box"><strong>${avgRisk}</strong><small>平均炎上</small></div></div><div class="comment-box"><strong>編集長：</strong><br>${ending.editor}</div><div class="comment-box"><strong>その後：</strong><br>${ending.after}</div>${state.achievements.length?`<div class="achievements">${state.achievements.map(a=>`<span class="achieve">${a.name}</span>`).join("")}</div>`:""}`);
+ choices([{name:"もう一度プレイする",action:startGame}]);updateHUD();
+}
+
+el.startBtn.onclick=startGame;el.howBtn.onclick=showHow;el.resetBtn.onclick=startGame;
+initState();scene("編集部へようこそ","ここでは、取材ライターのリアルな判断を体験できます。今回は難易度アップ版です。準備ができたらゲームを開始してください。");choices([]);updateHUD();
+</script>
+</body>
+</html>
