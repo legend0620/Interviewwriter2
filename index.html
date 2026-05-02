@@ -68,6 +68,23 @@ button{font:inherit;border:none;background:none;cursor:pointer}
 }
 
 @media(max-width:420px){body{padding:10px}.hud{grid-template-columns:repeat(2,1fr)}.hero{padding:10px}.btn{width:100%}.row{flex-direction:column}}
+
+button,.choice,.btn{
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+}
+.choice{
+  position:relative;
+  z-index:2;
+}
+.choice *{
+  pointer-events:none;
+}
+.person-visual img,.person-card-img,.title-image{
+  pointer-events:none;
+}
+
 </style>
 </head>
 <body>
@@ -548,8 +565,21 @@ function resetArticle(){
 function apply(e){if(!e)return;["trust","depth","read","accuracy","risk","deadline","stamina","budget"].forEach(k=>state[k]=clamp(state[k]+(e[k]||0)))}
 function scene(title,text,message="",extra=""){el.scene.innerHTML=`<h2 class="scene-title">${title}</h2><p class="scene-text">${text}</p>${extra}${message?`<div class="dialogue">${message}</div>`:""}`}
 function choices(items){
- el.choices.innerHTML=items.map((item,i)=>`<button class="choice ${item.disabled?"disabled":""}" data-i="${i}"><span class="choice-title">${item.name}</span>${item.desc?`<span class="choice-desc">${item.desc}</span>`:""}${item.tags?`<span class="tags">${item.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</span>`:""}</button>`).join("");
- [...el.choices.querySelectorAll("button")].forEach((btn,i)=>{if(!items[i].disabled)btn.onclick=items[i].action});
+ el.choices.innerHTML=items.map((item,i)=>`<button type="button" class="choice ${item.disabled?"disabled":""}" data-i="${i}"><span class="choice-title">${item.name}</span>${item.desc?`<span class="choice-desc">${item.desc}</span>`:""}${item.tags?`<span class="tags">${item.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</span>`:""}</button>`).join("");
+
+ const runAction=(btn,ev)=>{
+  if(!btn||btn.classList.contains("disabled"))return;
+  const i=Number(btn.dataset.i);
+  const item=items[i];
+  if(!item||typeof item.action!=="function")return;
+  if(ev)ev.preventDefault();
+  item.action();
+ };
+
+ [...el.choices.querySelectorAll("button")].forEach((btn)=>{
+  btn.addEventListener("click",(ev)=>runAction(btn,ev),{passive:false});
+  btn.addEventListener("touchend",(ev)=>runAction(btn,ev),{passive:false});
+ });
 }
 function updateHUD(){
  document.getElementById("articleNum").textContent=`${Math.min(state.articleIndex+1,MAX_ARTICLES)}/${MAX_ARTICLES}`;
@@ -886,6 +916,9 @@ function showEnding(){
 }
 
 el.startBtn.onclick=startGame;el.howBtn.onclick=showHow;el.resetBtn.onclick=startGame;
+el.startBtn.addEventListener("touchend",(e)=>{e.preventDefault();startGame();},{passive:false});
+el.howBtn.addEventListener("touchend",(e)=>{e.preventDefault();showHow();},{passive:false});
+el.resetBtn.addEventListener("touchend",(e)=>{e.preventDefault();startGame();},{passive:false});
 initState();scene("編集部へようこそ","ここでは、取材ライターのリアルな判断を体験できます。今回は難易度アップ版です。準備ができたらゲームを開始してください。");choices([]);updateHUD();
 </script>
 </body>
